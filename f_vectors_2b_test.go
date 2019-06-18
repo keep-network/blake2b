@@ -2,14 +2,7 @@ package blake2
 
 // Test vectors generated from golang.org/x/crypto/blake2b TestHashes vectors
 // - every unique hashBlocks invocation is covered here.
-var testVectors_2b = []struct {
-	mIn    string
-	hIn    [8]uint64
-	c      [2]uint64
-	f      bool
-	rounds int
-	hOut   [8]uint64
-}{
+var testVectors2b = []testVector{
 	// 0
 	{
 		mIn:    "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
