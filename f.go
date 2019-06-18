@@ -45,7 +45,7 @@ func F(h *[8]uint64, blocks []byte, t *[2]uint64, f bool, rounds int) {
 	var m [16]uint64
 	t0, t1 := t[0], t[1]
 
-	for i := 0; i < rounds; {
+	for i := 0; i < len(blocks); {
 		t0 += BlockSize
 		if t0 < BlockSize {
 			t1++
@@ -65,7 +65,7 @@ func F(h *[8]uint64, blocks []byte, t *[2]uint64, f bool, rounds int) {
 			i += 8
 		}
 
-		for j := 0; j < int(rounds); j++ {
+		for j := 0; j < rounds; j++ {
 			s := &(precomputed[j%10])
 
 			v0 += m[s[0]]
