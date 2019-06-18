@@ -38,11 +38,10 @@ var precomputed = [10][16]byte{
 }
 
 // F is a compression function for Blake2. It takes as an argument the state
-// vector `h`, message block vector `blocks` 2-bit offset counter `t`, final
+// vector `h`, message block vector `blocks`, offset counter `t`, final
 // block indicator flag `f`, and number of rounds `rounds`. The state vector
-// is modified by the function. Number of rounds can be anything between 0 and
-// 12 (inclusive).
-func F(h *[8]uint64, blocks []byte, t *[2]uint64, f uint64, rounds int) {
+// provided as the first parameter is modified by the function.
+func F(h *[8]uint64, blocks []byte, t *[2]uint64, f bool, rounds int) {
 	var m [16]uint64
 	t0, t1 := t[0], t[1]
 
@@ -56,7 +55,10 @@ func F(h *[8]uint64, blocks []byte, t *[2]uint64, f uint64, rounds int) {
 		v8, v9, v10, v11, v12, v13, v14, v15 := iv[0], iv[1], iv[2], iv[3], iv[4], iv[5], iv[6], iv[7]
 		v12 ^= t0
 		v13 ^= t1
-		v14 ^= f
+
+		if f {
+			v14 ^= 0xffffffffffffffff
+		}
 
 		for j := range m {
 			m[j] = binary.LittleEndian.Uint64(blocks[i:])
