@@ -17,6 +17,7 @@ func TestF(t *testing.T) {
 
 			h := test.hIn
 			c := test.c
+
 			F(&h, mHex, &c, test.flag, test.rounds)
 
 			if !reflect.DeepEqual(test.hOut, h) {
@@ -33,7 +34,7 @@ var testVectors = []struct {
 	hIn    [8]uint64
 	c      [2]uint64
 	flag   uint64
-	rounds uint8
+	rounds int
 	hOut   [8]uint64
 }{
 	// 0
