@@ -29,9 +29,8 @@ func runTest(t *testing.T, testVectors []testVector) {
 			var m [BlockSize]byte
 			copy(m[:], mDecoded)
 			h := test.hIn
-			c := test.c
 
-			F(&h, m, &c, test.f, test.rounds)
+			F(&h, m, test.t, test.f, test.rounds)
 
 			if !reflect.DeepEqual(test.hOut, h) {
 				t.Errorf("Unexpected result\nExpected: [%v]\nActual:   [%v]\n", test.hOut, h)
@@ -43,7 +42,7 @@ func runTest(t *testing.T, testVectors []testVector) {
 type testVector struct {
 	mIn    string
 	hIn    [8]uint64
-	c      [2]uint64
+	t      [2]uint64
 	f      bool
 	rounds int
 	hOut   [8]uint64
