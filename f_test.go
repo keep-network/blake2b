@@ -44,6 +44,6 @@ type testVector struct {
 	hIn    [8]uint64
 	t      [2]uint64
 	f      bool
-	rounds int
+	rounds uint32
 	hOut   [8]uint64
 }
