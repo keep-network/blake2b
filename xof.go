@@ -8,6 +8,8 @@ import (
 	"encoding/binary"
 	"errors"
 	"io"
+
+	"github.com/keep-network/blake2b/compression"
 )
 
 // XOF defines the interface to hash functions that
@@ -172,6 +174,6 @@ func (x *xof) Read(p []byte) (n int, err error) {
 func (d *digest) initConfig(cfg *[Size]byte) {
 	d.offset, d.c[0], d.c[1] = 0, 0, 0
 	for i := range d.h {
-		d.h[i] = iv[i] ^ binary.LittleEndian.Uint64(cfg[i*8:])
+		d.h[i] = compression.IV[i] ^ binary.LittleEndian.Uint64(cfg[i*8:])
 	}
 }

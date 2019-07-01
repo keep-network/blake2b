@@ -4,12 +4,17 @@
 //
 // Modified by KEEP SEZC to expose F compression function.
 //
-
-package blake2b
+package compression
 
 import (
 	"math/bits"
 )
+
+// IV is an initialization vector for BLAKE2b
+var IV = [8]uint64{
+	0x6a09e667f3bcc908, 0xbb67ae8584caa73b, 0x3c6ef372fe94f82b, 0xa54ff53a5f1d36f1,
+	0x510e527fade682d1, 0x9b05688c2b3e6c1f, 0x1f83d9abfb41bd6b, 0x5be0cd19137e2179,
+}
 
 // the precomputed values for BLAKE2b
 // there are 10 16-byte arrays - one for each round
@@ -35,7 +40,7 @@ func F(h *[8]uint64, m [16]uint64, c [2]uint64, f bool, rounds uint32) {
 	c0, c1 := c[0], c[1]
 
 	v0, v1, v2, v3, v4, v5, v6, v7 := h[0], h[1], h[2], h[3], h[4], h[5], h[6], h[7]
-	v8, v9, v10, v11, v12, v13, v14, v15 := iv[0], iv[1], iv[2], iv[3], iv[4], iv[5], iv[6], iv[7]
+	v8, v9, v10, v11, v12, v13, v14, v15 := IV[0], IV[1], IV[2], IV[3], IV[4], IV[5], IV[6], IV[7]
 	v12 ^= c0
 	v13 ^= c1
 

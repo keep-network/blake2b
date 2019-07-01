@@ -1,4 +1,4 @@
-package blake2b
+package compression
 
 import (
 	"encoding/binary"
