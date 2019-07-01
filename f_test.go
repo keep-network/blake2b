@@ -1,6 +1,8 @@
 package blake2b
 
 import (
+	"encoding/binary"
+	"encoding/hex"
 	"fmt"
 	"reflect"
 	"testing"
@@ -9,6 +11,8 @@ import (
 func TestF(t *testing.T) {
 	for i, test := range testVectorsF {
 		t.Run(fmt.Sprintf("test vector %v", i), func(t *testing.T) {
+			//toEthereumTestCase(test)
+
 			h := test.hIn
 
 			F(&h, test.m, test.c, test.f, test.rounds)
@@ -174,4 +178,70 @@ var testVectorsF = []testVector{
 		rounds: 12,
 		hOut:   [8]uint64{0xccfc282ed6092714, 0x5b46f8d0fa97afd0, 0x7010c51d20821e97, 0x48923ea42a37a0fa, 0x609a13be7c1e14b, 0x6e10a4b63d85d1d5, 0x6d3d370d80f97b0a, 0x61a4f22ed6462dee},
 	},
+}
+
+// toEthereumTestCase transforms F test vector into test vector format used by
+// go-ethereum precompiles
+func toEthereumTestCase(vector testVector) {
+	var memory [213]byte
+
+	// for h (512 bits = 64 bytes)
+	binary.BigEndian.PutUint64(memory[0:8], vector.hIn[0])
+	binary.BigEndian.PutUint64(memory[8:16], vector.hIn[1])
+	binary.BigEndian.PutUint64(memory[16:24], vector.hIn[2])
+	binary.BigEndian.PutUint64(memory[24:32], vector.hIn[3])
+
+	binary.BigEndian.PutUint64(memory[32:40], vector.hIn[4])
+	binary.BigEndian.PutUint64(memory[40:48], vector.hIn[5])
+	binary.BigEndian.PutUint64(memory[48:56], vector.hIn[6])
+	binary.BigEndian.PutUint64(memory[56:64], vector.hIn[7])
+
+	// for m (1024 bits = 128 bytes)
+	binary.BigEndian.PutUint64(memory[64:72], vector.m[0])
+	binary.BigEndian.PutUint64(memory[72:80], vector.m[1])
+	binary.BigEndian.PutUint64(memory[80:88], vector.m[2])
+	binary.BigEndian.PutUint64(memory[88:96], vector.m[3])
+
+	binary.BigEndian.PutUint64(memory[96:104], vector.m[4])
+	binary.BigEndian.PutUint64(memory[104:112], vector.m[5])
+	binary.BigEndian.PutUint64(memory[112:120], vector.m[6])
+	binary.BigEndian.PutUint64(memory[120:128], vector.m[7])
+
+	binary.BigEndian.PutUint64(memory[128:136], vector.m[8])
+	binary.BigEndian.PutUint64(memory[136:144], vector.m[9])
+	binary.BigEndian.PutUint64(memory[144:152], vector.m[10])
+	binary.BigEndian.PutUint64(memory[152:160], vector.m[11])
+
+	binary.BigEndian.PutUint64(memory[160:168], vector.m[12])
+	binary.BigEndian.PutUint64(memory[168:176], vector.m[13])
+	binary.BigEndian.PutUint64(memory[176:184], vector.m[14])
+	binary.BigEndian.PutUint64(memory[184:192], vector.m[15])
+
+	// 8 bytes for t[0], 8 bytes for t[1]
+	binary.BigEndian.PutUint64(memory[192:200], vector.c[0])
+	binary.BigEndian.PutUint64(memory[200:208], vector.c[1])
+
+	// 1 byte for f
+	if vector.f {
+		memory[208] = 1
+	}
+
+	// 4 bytes for rounds
+	binary.BigEndian.PutUint32(memory[209:213], uint32(vector.rounds))
+
+	fmt.Printf("input: \"%v\"\n", hex.EncodeToString(memory[:]))
+
+	var result [64]byte
+
+	binary.BigEndian.PutUint64(result[0:8], vector.hOut[0])
+	binary.BigEndian.PutUint64(result[8:16], vector.hOut[1])
+	binary.BigEndian.PutUint64(result[16:24], vector.hOut[2])
+	binary.BigEndian.PutUint64(result[24:32], vector.hOut[3])
+
+	binary.BigEndian.PutUint64(result[32:40], vector.hOut[4])
+	binary.BigEndian.PutUint64(result[40:48], vector.hOut[5])
+	binary.BigEndian.PutUint64(result[48:56], vector.hOut[6])
+	binary.BigEndian.PutUint64(result[56:64], vector.hOut[7])
+
+	fmt.Printf("expected: \"%v\"\n", hex.EncodeToString(result[:]))
 }
