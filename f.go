@@ -41,7 +41,7 @@ var precomputed = [10][16]byte{
 // vector `h`, message block vector `mb`, offset counter `t`, final
 // block indicator flag `f`, and number of rounds `rounds`. The state vector
 // provided as the first parameter is modified by the function.
-func F(h *[8]uint64, mb [BlockSize]byte, t [2]uint64, f bool, rounds int) {
+func F(h *[8]uint64, mb [BlockSize]byte, t [2]uint64, f bool, rounds uint32) {
 	var m [16]uint64
 	t0, t1 := t[0], t[1]
 
@@ -65,7 +65,7 @@ func F(h *[8]uint64, mb [BlockSize]byte, t [2]uint64, f bool, rounds int) {
 			i += 8
 		}
 
-		for j := 0; j < rounds; j++ {
+		for j := uint32(0); j < rounds; j++ {
 			s := &(precomputed[j%10])
 
 			v0 += m[s[0]]
