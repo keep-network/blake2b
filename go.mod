@@ -1,3 +1,3 @@
-module github.com/keep-network/blake2
+module github.com/keep-network/blake2b
 
 go 1.12
